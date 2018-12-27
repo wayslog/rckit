@@ -1,9 +1,11 @@
+#![feature(slice_concat_ext)]
 #![deny(warnings)]
 #![allow(clippy::let_unit_value)]
 #[macro_use]
 extern crate clap;
 extern crate redis;
 
+pub mod report;
 mod add;
 mod cluster;
 mod create;
@@ -171,6 +173,10 @@ pub fn run() {
         let cluster = Cluster::new(nodes);
         cluster.reshard();
         return;
+    }
+
+    if let Some(subm) = matches.subcommand_matches("report") {
+        let _ = report::ReporterConfig::new(subm).build();
     }
 
     println!("{}", matches.usage())
